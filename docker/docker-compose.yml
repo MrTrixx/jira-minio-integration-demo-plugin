@@ -1,0 +1,111 @@
+version: "3.9"
+
+# example: docker-compose up
+
+services:
+  jira_node_1:
+    depends_on:
+      - postgresql
+    image: atlassian/jira-software:8.20.30
+    networks:
+      - jiranet
+    volumes:
+      - ${JIRA_SHARED_VOLUME}
+      - ${JIRA_NODE_1_LOG_VOLUME}
+    ports:
+      - '8080:8080'
+      - '8000:8000'
+    environment:
+      ATL_JDBC_URL: "jdbc:postgresql://postgresql:${DB_PORT}/${DB_NAME}"
+      ATL_JDBC_USER: "${DB_USER}"
+      ATL_JDBC_PASSWORD: "${DB_USER}"
+      ATL_DB_DRIVER: "org.postgresql.Driver"
+      ATL_DB_TYPE: "postgres72"
+      JVM_MINIMUM_MEMORY: "2048m"
+      JVM_MAXIMUM_MEMORY: "4096m"
+      JVM_SUPPORT_RECOMMENDED_ARGS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000"
+      CLUSTERED: "true"
+      JIRA_NODE_ID: "node_1"
+    logging:
+      # limit logs retained on host to 25MB
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "50"
+
+# uncomment service: jira_node_2 after start postgres + jira_node_1 and shutdown jira_node_1 after fully started
+# after all work u can run both jira nodes
+
+#  jira_node_2:
+#    depends_on:
+#      - postgresql
+#    image: atlassian/jira-software:8.20.30
+#    networks:
+#      - jiranet
+#    volumes:
+#      - ${JIRA_SHARED_VOLUME}
+#      - ${JIRA_NODE_2_LOG_VOLUME}
+#    ports:
+#      - '8081:8080'
+#      - '8001:8000'
+#    environment:
+#      ATL_JDBC_URL: "${DB_HOST}"
+#      ATL_JDBC_USER: "${DB_USER}"
+#      ATL_JDBC_PASSWORD: "${DB_USER}"
+#      ATL_DB_DRIVER: "org.postgresql.Driver"
+#      ATL_DB_TYPE: "postgres72"
+#      JVM_MINIMUM_MEMORY: "2048m"
+#      JVM_MAXIMUM_MEMORY: "4096m"
+#      JVM_SUPPORT_RECOMMENDED_ARGS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000"
+#      CLUSTERED: "true"
+#      JIRA_NODE_ID: "node_2"
+#    logging:
+#      # limit logs retained on host to 25MB
+#      driver: "json-file"
+#      options:
+#        max-size: "500k"
+#        max-file: "50"
+
+  postgresql:
+    image: postgres:13.3
+    networks:
+      - jiranet
+    volumes:
+      - postgresqldata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_ENCODING: "UNICODE"
+      POSTGRES_COLLATE: "C"
+      POSTGRES_COLLATE_TYPE: "C"
+    logging:
+      # limit logs retained on host to 25MB
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "50"
+  minio:
+    image: minio/minio:latest
+    networks:
+      - jiranet
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASS}"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+volumes:
+  postgresqldata:
+    external: false
+  minio_data:
+
+networks:
+  jiranet:
+    driver: bridge

@@ -39,4 +39,3 @@ build/
 
 docker/jirashared
 docker/local-env
-dev
