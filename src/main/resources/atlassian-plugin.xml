@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">/ru/jira/minio/integration/custom/plugin/images/pluginIcon.png</param>
+        <param name="plugin-logo">/ru/jira/minio/integration/custom/plugin/images/pluginLogo.png</param>
+        <param name="atlassian-data-center-status">compatible</param>
+        <param name="atlassian-data-center-compatible">true</param>
+    </plugin-info>
+
+    <resource type="i18n" name="jira-minio-integration-demo-plugin-i18n" location="/ru/jira/minio/integration/custom/plugin/jira-minio-integration-demo-plugin"/>
+
+    <rest name="ira Minio integration custom plugin Rest Resource" key="jira-minio-integration-demo-plugin-rest" path="/minio_integration_demo" version="1.0">
+        <description>${project.name} Rest API</description>
+    </rest>
+
+</atlassian-plugin>
