@@ -14,7 +14,12 @@ object MinioExtensions : KLogging() {
         )
     }.onFailure {
         logger.error(it) { "Cannot ping pong by minio client" }
+    }.onSuccess {
+        logger.info { "Success custom pin-pong $bucketName" }
     }.isSuccess
+
+
+    fun bucketExistsArg(bucketName: String): BucketExistsArgs = BucketExistsArgs.builder().bucket(bucketName).build()
 
     private fun UUID.toUuidWithoutDelimiter() = toString().replace("-", EMPTY)
 }

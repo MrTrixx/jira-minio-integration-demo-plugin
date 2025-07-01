@@ -30,10 +30,9 @@
         <kotlin.logging.version>3.0.5</kotlin.logging.version>
         <minio.version>8.5.2</minio.version>
         <spring.version>5.3.21</spring.version>
-        <jackson.databind.version>2.16.0</jackson.databind.version>
+        <jackson.databind.version>2.14.0</jackson.databind.version>
         <hibernate.validator>6.0.22.Final</hibernate.validator>
         <jax.ws.rs>2.0.1</jax.ws.rs>
-        <jackson.databind.version>2.16.0</jackson.databind.version>
         <javax.servlet-api>3.0.1</javax.servlet-api>
         <postgres.version>42.6.0</postgres.version>
         <junit.jupiter.version>5.10.0</junit.jupiter.version>
@@ -213,6 +212,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson.databind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson.databind.version}</version>
         </dependency>
 
